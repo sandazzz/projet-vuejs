@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
-const articles = ref<{ title: string; link: string; description: string }[]>(
-  []
-);
+const router = useRouter();
+const articles = ref<{ title: string; link: string; description: string }[]>([]);
 const feedTitle = ref("");
+const isLoading = ref(true);
 
 onMounted(async () => {
   const storedFeeds = localStorage.getItem("rssFeeds");
@@ -35,48 +35,60 @@ onMounted(async () => {
         title: item.querySelector("title")?.textContent || "Sans titre",
         link: item.querySelector("link")?.textContent || "#",
         description:
-          item.querySelector("description")?.textContent ||
-          "Pas de description",
+          item.querySelector("description")?.textContent || "Pas de description",
       }));
     } catch (error) {
       console.error("Erreur de chargement du flux RSS", error);
+    } finally {
+      isLoading.value = false;
     }
+  } else {
+    router.push("/");
   }
 });
 </script>
 
 <template>
-  <div class="flex flex-col items-center min-h-screen">
-    <div class="w-full max-w-lg bg-white p-6 rounded-2xl shadow-lg">
-      <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">
-        Articles de {{ feedTitle }}
+  <div class="flex flex-col items-center min-h-screen bg-gray-100 px-4 py-6">
+    <div class="w-full max-w-3xl bg-white p-6 md:p-8 rounded-xl shadow-xl border border-gray-200">
+      <h1 class="text-2xl md:text-3xl font-extrabold text-gray-800 mb-4 text-center">
+        📰 Articles de {{ feedTitle }}
       </h1>
+
       <button
-        @click="$router.push('/')"
-        class="mt-6 bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-700"
+        @click="router.push('/')"
+        class="w-full md:w-auto bg-gray-600 text-white px-5 py-3 rounded-lg shadow-md hover:bg-gray-700 transition focus:ring-2 focus:ring-gray-500 focus:outline-none"
       >
-        Retour
+        ⬅️ Retour
       </button>
-      <div v-if="articles.length === 0" class="text-gray-500 text-center">
-        Aucun article trouvé.
+
+      <div v-if="isLoading" class="text-gray-500 text-center text-lg mt-6">
+        ⏳ Chargement des articles...
       </div>
 
-      <ul class="space-y-4">
+      <div v-else-if="articles.length === 0" class="text-gray-500 text-center text-lg mt-6">
+        📭 Aucun article trouvé.
+      </div>
+
+      <ul v-else class="mt-6 space-y-4">
         <li
           v-for="(article, index) in articles"
           :key="index"
-          class="border-b pb-2"
+          class="bg-gray-50 p-4 rounded-lg shadow-md hover:shadow-lg transition border border-gray-300"
         >
           <a
             :href="article.link"
             target="_blank"
-            class="text-blue-600 hover:underline text-lg font-semibold"
+            class="text-blue-600 hover:text-blue-700 text-lg md:text-xl font-semibold flex items-center gap-2 transition"
           >
-            {{ article.title }}
+            🔗 {{ article.title }}
           </a>
-          <p class="text-gray-600 text-sm">{{ article.description }}</p>
+          <p class="text-gray-600 text-sm mt-2 leading-relaxed">
+            {{ article.description }}
+          </p>
         </li>
       </ul>
     </div>
   </div>
 </template>
+

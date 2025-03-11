@@ -23,17 +23,21 @@ const modifyFeed = (index: number) => {
 </script>
 
 <template>
-  <div class="flex flex-col justify-center items-center">
-    <router-link to="/register">Enregister un flux</router-link>
-
-    <div
-      class="w-full max-w-lg min-h-screen mt-8 bg-white p-6 rounded-2xl shadow-lg"
+  <div class="flex flex-col justify-center items-center min-h-screen bg-gray-100 px-4 py-10">
+    <router-link
+      to="/register"
+      class="mb-6 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition"
     >
-      <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">
-        Liste des Flux RSS
+      ➕ Enregistrer un flux
+    </router-link>
+
+    <div class="w-full max-w-2xl bg-white p-6 rounded-xl shadow-lg">
+      <h1 class="text-4xl font-extrabold text-gray-800 mb-6 text-center">
+        📰 Liste des Flux RSS
       </h1>
-      <div v-if="rssFeeds.length === 0" class="text-gray-500 text-center">
-        Aucun flux RSS enregistré.
+
+      <div v-if="rssFeeds.length === 0" class="text-gray-500 text-center text-lg">
+        📭 Aucun flux RSS enregistré.
       </div>
 
       <div v-else class="space-y-4">

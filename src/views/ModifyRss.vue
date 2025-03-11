@@ -40,36 +40,41 @@ const updateFeed = () => {
 </script>
 
 <template>
-  <div class="flex flex-col justify-center items-center min-h-screen">
-    <div class="w-full max-w-lg bg-white p-6 rounded-2xl shadow-lg">
-      <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">
-        Modifier un Flux RSS
+  <div class="flex flex-col justify-center items-center min-h-screen bg-gray-100 px-4 py-10">
+    <div class="w-full max-w-lg bg-white p-8 rounded-xl shadow-xl border border-gray-200">
+      <h1 class="text-3xl font-extrabold text-gray-800 mb-6 text-center">
+        ✏️ Modifier un Flux RSS
       </h1>
-
-      <div class="space-y-4">
+<button
+        @click="router.push('/')"
+        class="w-full md:w-auto bg-gray-600 text-white px-5 py-3 rounded-lg shadow-md hover:bg-gray-700 transition focus:ring-2 focus:ring-gray-500 focus:outline-none"
+      >
+        ⬅️ Retour
+      </button>
+      <div class="space-y-6">
         <div>
-          <label class="block text-gray-700 font-medium">Titre</label>
+          <label class="block text-gray-700 font-medium mb-1">Titre</label>
           <input
             v-model="feedTitle"
             type="text"
-            class="w-full mt-1 p-2 border rounded-md"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
           />
         </div>
 
         <div>
-          <label class="block text-gray-700 font-medium">Lien</label>
+          <label class="block text-gray-700 font-medium mb-1">Lien</label>
           <input
             v-model="feedLink"
             type="url"
-            class="w-full mt-1 p-2 border rounded-md"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
           />
         </div>
 
         <button
           @click="updateFeed"
-          class="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700"
+          class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg shadow-md hover:bg-blue-700 transition focus:ring-2 focus:ring-blue-500 focus:outline-none"
         >
-          Enregistrer les modifications
+          💾 Enregistrer les modifications
         </button>
       </div>
     </div>

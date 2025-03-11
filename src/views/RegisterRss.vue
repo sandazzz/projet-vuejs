@@ -24,50 +24,56 @@ const addRssFeed = () => {
   title.value = "";
   link.value = "";
 
-  console.log(rssFeeds.value);
-  router.push("/")
+  router.push("/");
 };
 </script>
 
 <template>
-  <div
-    class="min-h-screen bg-gray-100 p-6 flex flex-col justify-center items-center"
-  >
-    <div class="w-full max-w-lg bg-white p-6 rounded-2xl shadow-lg">
-      <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">
-        Ajouter un Flux RSS
+  <div class="min-h-screen bg-gray-100 flex flex-col justify-center items-center px-4 py-10">
+    <div class="w-full max-w-lg bg-white p-8 rounded-xl shadow-xl border border-gray-200">
+      <h2 class="text-3xl font-extrabold text-gray-800 mb-6 text-center">
+        ➕ Ajouter un Flux RSS
       </h2>
-
-      <form @submit.prevent="addRssFeed" class="space-y-4">
+<button
+        @click="router.push('/')"
+        class="w-full md:w-auto bg-gray-600 text-white px-5 py-3 rounded-lg shadow-md hover:bg-gray-700 transition focus:ring-2 focus:ring-gray-500 focus:outline-none"
+      >
+        ⬅️ Retour
+      </button>
+      <form @submit.prevent="addRssFeed" class="space-y-6">
         <div>
-          <label class="block text-gray-700 font-medium mb-2"
-            >Titre du flux</label
-          >
+          <label for="title" class="block text-gray-700 font-medium mb-2">
+            📌 Titre du flux
+          </label>
           <input
+            id="title"
             v-model="title"
             type="text"
-            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Ex: Actualités Tech"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
             required
           />
         </div>
 
         <div>
-          <label class="block text-gray-700 font-medium mb-2"
-            >Lien du flux RSS</label
-          >
+          <label for="link" class="block text-gray-700 font-medium mb-2">
+            🔗 Lien du flux RSS
+          </label>
           <input
+            id="link"
             v-model="link"
             type="url"
-            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="https://exemple.com/rss"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
             required
           />
         </div>
 
         <button
           type="submit"
-          class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold"
+          class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg shadow-md hover:bg-blue-700 transition focus:ring-2 focus:ring-blue-500 focus:outline-none"
         >
-          Ajouter
+          📥 Ajouter
         </button>
       </form>
     </div>
