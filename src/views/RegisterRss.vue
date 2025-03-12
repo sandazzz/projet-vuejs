@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import type { RssFeed } from "../types/rssfeed.type";
-import { useRouter } from "vue-router";
-
-const router = useRouter();
 
 const title = ref<string>("");
 const link = ref<string>("");
@@ -23,23 +20,19 @@ const addRssFeed = () => {
 
   title.value = "";
   link.value = "";
-
-  router.push("/");
 };
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100 flex flex-col justify-center items-center px-4 py-10">
-    <div class="w-full max-w-lg bg-white p-8 rounded-xl shadow-xl border border-gray-200">
+  <div
+    class="min-h-screen bg-gray-100 flex flex-col justify-center items-center px-4 py-10"
+  >
+    <div
+      class="w-full max-w-lg bg-white p-8 rounded-xl shadow-xl border border-gray-200"
+    >
       <h2 class="text-3xl font-extrabold text-gray-800 mb-6 text-center">
         ➕ Ajouter un Flux RSS
       </h2>
-<button
-        @click="router.push('/')"
-        class="w-full md:w-auto bg-gray-600 text-white px-5 py-3 rounded-lg shadow-md hover:bg-gray-700 transition focus:ring-2 focus:ring-gray-500 focus:outline-none"
-      >
-        ⬅️ Retour
-      </button>
       <form @submit.prevent="addRssFeed" class="space-y-6">
         <div>
           <label for="title" class="block text-gray-700 font-medium mb-2">
