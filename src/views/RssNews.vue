@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-
-interface Article {
-  title: string;
-  link: string;
-  description: string;
-}
+import ArticleItem from "../components/ArticleItem.vue";
+import ArticleModal from "../components/ArticleModal.vue";
+import type { Article } from "../types/article.type";
 
 const route = useRoute();
 const router = useRouter();
@@ -15,7 +12,7 @@ const feedTitle = ref("");
 const isLoading = ref(true);
 const selectedArticle = ref<Article | null>(null);
 
-// Réactive pour les articles favoris
+// Articles favoris
 const favoriteArticles = ref<Article[]>([]);
 
 function loadFavorites() {
@@ -31,6 +28,16 @@ function saveFavorites() {
     JSON.stringify(favoriteArticles.value)
   );
 }
+
+const displayLimit = ref("10");
+
+const displayedArticles = computed(() => {
+  if (displayLimit.value === "all") {
+    return articles.value;
+  } else {
+    return articles.value.slice(0, parseInt(displayLimit.value));
+  }
+});
 
 onMounted(async () => {
   loadFavorites();
@@ -50,11 +57,9 @@ onMounted(async () => {
       const data = await response.json();
       const xmlText = data.contents;
 
-      // Convertir XML en DOM
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(xmlText, "text/xml");
 
-      // Extraire les articles (<item>)
       const items = xmlDoc.querySelectorAll("item");
       articles.value = Array.from(items).map((item) => ({
         title: item.querySelector("title")?.textContent || "Sans titre",
@@ -74,7 +79,6 @@ onMounted(async () => {
 });
 
 function addFavorite(article: Article) {
-  // Vérifier si l'article est déjà dans les favoris
   if (!favoriteArticles.value.some((fav) => fav.link === article.link)) {
     favoriteArticles.value.push(article);
     saveFavorites();
@@ -104,6 +108,21 @@ function closeArticle() {
         📰 Articles de {{ feedTitle }}
       </h1>
 
+      <!-- Sélecteur de limite d'affichage -->
+      <div class="mb-4 text-center">
+        <label for="limit" class="mr-2 font-medium">Afficher :</label>
+        <select
+          id="limit"
+          v-model="displayLimit"
+          class="border border-gray-300 rounded px-2 py-1"
+        >
+          <option value="10">10</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="all">Tout</option>
+        </select>
+      </div>
+
       <div v-if="isLoading" class="text-gray-500 text-center text-lg mt-6">
         ⏳ Chargement des articles...
       </div>
@@ -116,77 +135,20 @@ function closeArticle() {
       </div>
 
       <ul v-else class="mt-6 space-y-4">
-        <li
-          v-for="(article, index) in articles"
+        <ArticleItem
+          v-for="(article, index) in displayedArticles"
           :key="index"
-          class="bg-gray-50 p-4 rounded-lg shadow-md hover:shadow-lg transition border border-gray-300"
-        >
-          <h2 class="text-lg md:text-xl font-semibold text-gray-800">
-            {{ article.title }}
-          </h2>
-          <p class="text-gray-600 text-sm mt-2 leading-relaxed">
-            {{ article.description }}
-          </p>
-          <div class="mt-4 flex gap-2 flex-wrap">
-            <a
-              :href="article.link"
-              target="_blank"
-              class="text-blue-600 hover:text-blue-700 underline"
-            >
-              🔗 Lire l'article complet
-            </a>
-            <!-- Bouton pour afficher les détails dans une modal -->
-            <button
-              @click="showArticle(article)"
-              class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-            >
-              Afficher l'article
-            </button>
-            <!-- Bouton pour ajouter aux favoris -->
-            <button
-              @click="addFavorite(article)"
-              class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-            >
-              Ajouter aux favoris
-            </button>
-          </div>
-        </li>
+          :article="article"
+          @show-article="showArticle"
+          @add-favorite="addFavorite"
+        />
       </ul>
     </div>
-
-    <!-- Modal d'affichage de l'article sélectionné -->
-    <div
+    <ArticleModal
       v-if="selectedArticle"
-      class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center p-4"
-    >
-      <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-auto">
-        <h2 class="text-xl font-bold mb-2">
-          {{ selectedArticle.title }}
-        </h2>
-        <p class="mb-4">
-          {{ selectedArticle.description }}
-        </p>
-        <a
-          :href="selectedArticle.link"
-          target="_blank"
-          class="text-blue-600 underline mb-4 block"
-        >
-          Lire l'article complet
-        </a>
-        <!-- Bouton dans la modal pour ajouter aux favoris -->
-        <button
-          @click="addFavorite(selectedArticle)"
-          class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full mb-2"
-        >
-          Ajouter aux favoris
-        </button>
-        <button
-          @click="closeArticle"
-          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full"
-        >
-          Fermer
-        </button>
-      </div>
-    </div>
+      :article="selectedArticle"
+      @close="closeArticle"
+      @addFavorite="addFavorite"
+    />
   </div>
 </template>

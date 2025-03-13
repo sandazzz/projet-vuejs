@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { RssFeed } from "../types/rssfeed.type";
-import { defineProps, defineEmits } from "vue";
 
 const props = defineProps<{ feed: RssFeed; index: number }>();
 const emit = defineEmits<{

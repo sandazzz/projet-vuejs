@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-
-interface Article {
-  title: string;
-  link: string;
-  description: string;
-}
+import ArticleModal from "../components/FavouriteArticleModal.vue";
+import type { Article } from "../types/article.type";
 
 const favoriteArticles = ref<Article[]>([]);
 const selectedArticle = ref<Article | null>(null);
@@ -55,7 +51,6 @@ const filteredFavorites = computed(() => {
 
 <template>
   <div class="min-h-screen bg-gray-100">
-    <!-- Conteneur central limité en largeur sur desktop -->
     <div class="mx-auto p-4 max-w-md md:max-w-lg">
       <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">
         ⭐ Mes Favoris
@@ -79,7 +74,6 @@ const filteredFavorites = computed(() => {
           :key="index"
           class="flex items-center justify-between bg-white rounded-lg shadow p-4"
         >
-          <!-- Titre cliquable pour afficher la modal détaillée -->
           <button
             @click="showArticle(article)"
             class="flex-1 text-left text-base md:text-lg font-medium text-gray-800 truncate cursor-pointer"
@@ -96,33 +90,10 @@ const filteredFavorites = computed(() => {
         </div>
       </div>
     </div>
-
-    <!-- Modal d'affichage détaillé -->
-    <div
+    <ArticleModal
       v-if="selectedArticle"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
-    >
-      <div
-        class="bg-white rounded-lg shadow-lg w-full max-w-md md:max-w-lg p-6"
-      >
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">
-          {{ selectedArticle.title }}
-        </h2>
-        <p class="text-gray-600 mb-4">{{ selectedArticle.description }}</p>
-        <a
-          :href="selectedArticle.link"
-          target="_blank"
-          class="block text-blue-500 underline mb-4 cursor-pointer"
-        >
-          Lire l'article complet
-        </a>
-        <button
-          @click="closeArticle"
-          class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded cursor-pointer"
-        >
-          Fermer
-        </button>
-      </div>
-    </div>
+      :article="selectedArticle"
+      @close="closeArticle"
+    />
   </div>
 </template>
